@@ -1,38 +1,17 @@
-const mongoose = require('mongoose');
-// optional shortcut to the mongoose.Schema class
-const Schema = mongoose.Schema;
+var express = require('express');
+var router = express.Router();
+const flightsCtrl = require('../controllers/flights');
 
-const destinationSchema = new Schema ({
-    airport: {
-        type: String,
-        enum: ['AUS', 'DFW', 'DEN', 'LAX', 'SAN'],
-    },
-    arrival: {
-        type: Date
-    }
-});
+// All routes starts with: /flights (because of the mounting in server.js)
 
-const flightSchema = new Schema({
-    airline: {
-        type: String,
-        enum: ['American', 'Southwest', 'United']
-    },
-    airport: {
-        type: String,
-        enum: ['AUS', 'DFW', 'DEN', 'LAX', 'SAN'],
-        default: 'DEN'
-    },
-    flightNo: {
-        type: Number,
-        required: true,
-        min: 10,
-        max: 999
-    },
-    departs: {
-        type: Date,
-        default: Date.now() + 365*24*60*60000
-    },
-    destinations: [destinationSchema]
-});
+// GET /flights
+router.get('/', flightsCtrl.index);
+// GET /flights/new (new functionality)
+router.get('/new', flightsCtrl.new);
+// GET /flights/:id (show functionality) 
+router.get('/:id', flightsCtrl.show);
+// POST /flights (create functionality)
+router.post('/', flightsCtrl.create);
 
-module.exports = mongoose.model('Flight', flightSchema);
+
+module.exports = router;
